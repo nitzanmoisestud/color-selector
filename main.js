@@ -1,49 +1,69 @@
 "use strict";
+window.addEventListener("load", init);
 
+// Defining global varibals from the dom
 const colorInput = document.querySelector("body > div > input[type=color]");
 const hexText = document.getElementById("hex");
 const rgbText = document.getElementById("rgb");
 const hslText = document.getElementById("hsl");
-
 const board = document.querySelector(".color-board");
-board.style.backgroundColor = colorInput.value;
-hexText.textContent = colorInput.value;
-generateRgb(colorInput.value);
 
-colorInput.addEventListener("input", getColor);
+function init() {
+  // Setting up a starting point values
+  board.style.backgroundColor = colorInput.value;
+  hexText.textContent = colorInput.value;
+  showRgb(colorInput.value);
+  showHsl(colorInput.value);
 
-function getColor(e) {
-  console.log(colorInput.value);
-  let hexCode = e.target.value;
-  showTextColor(hexCode);
+  // Calling get color when user is changing the input color
+  colorInput.addEventListener("input", getColor);
 }
 
-function showTextColor(hexCode) {
-  hexText.textContent = hexCode;
-  showBoxColor(hexCode);
+function getColor() {
+  //  Calling the different functions to set up the colors values
+  showTextColor();
+  showBoxColor();
+  showRgb();
+  showHsl();
 }
 
-function showBoxColor(hexCode) {
-  board.style.backgroundColor = hexCode;
-  generateRgb(hexCode);
+function setHexColor() {
+  let hexCode = colorInput.value;
+  return hexCode;
 }
 
-function generateRgb(hex) {
+function showTextColor() {
+  hexText.textContent = setHexColor();
+}
+
+function showBoxColor() {
+  board.style.backgroundColor = setHexColor();
+}
+
+function generateRgb() {
+  let hex = setHexColor();
   let r = hex.substring(1, 3);
   let g = hex.substring(3, 5);
   let b = hex.substring(5, 7);
   r = parseInt(r, 16);
   g = parseInt(g, 16);
   b = parseInt(b, 16);
-  showRgb(r, g, b);
+  const rgbObj = { r, g, b };
+  return rgbObj;
 }
 
-function showRgb(r, g, b) {
-  rgbText.textContent = r + " , " + g + " , " + b;
-  generateHsl(r, g, b);
+function showRgb() {
+  let rgbObj = generateRgb();
+  rgbText.textContent = rgbObj.r + " , " + rgbObj.g + " , " + rgbObj.b;
 }
 
-function generateHsl(r, g, b) {
+function generateHsl() {
+  let hexCode = setHexColor();
+  let rgbObj = generateRgb(hexCode);
+  let r = rgbObj.r;
+  let g = rgbObj.g;
+  let b = rgbObj.b;
+
   let h, s, l;
 
   const min = Math.min(r, g, b);
@@ -73,12 +93,12 @@ function generateHsl(r, g, b) {
   // multiply s and l by 100 to get the value in percent, rather than [0,1]
   s *= 100;
   l *= 100;
-  console.log("hsl(%f,%f%,%f%)", h, s, l); // just for testing
-  showHsl(h, s, l);
+  return { h, s, l };
 }
 
-function showHsl(h, s, l) {
-  hslText.textContent = `hsl(${Math.floor(h)}%,${Math.floor(s)}%,${Math.floor(
-    l
-  )}%)`;
+function showHsl() {
+  let hslObj = generateHsl();
+  hslText.textContent = `hsl(${Math.floor(hslObj.h)}%,${Math.floor(
+    hslObj.s
+  )}%,${Math.floor(hslObj.l)}%)`;
 }
