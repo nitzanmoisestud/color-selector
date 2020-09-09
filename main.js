@@ -1,3 +1,5 @@
+"use strict";
+
 const colorInput = document.querySelector("body > div > input[type=color]");
 const hexText = document.getElementById("hex");
 const rgbText = document.getElementById("rgb");
@@ -8,13 +10,21 @@ board.style.backgroundColor = colorInput.value;
 hexText.textContent = colorInput.value;
 generateRgb(colorInput.value);
 
-colorInput.addEventListener("input", changeColor);
+colorInput.addEventListener("input", getColor);
 
-function changeColor(e) {
+function getColor(e) {
   console.log(colorInput.value);
   let hexCode = e.target.value;
-  board.style.backgroundColor = hexCode;
+  showTextColor(hexCode);
+}
+
+function showTextColor(hexCode) {
   hexText.textContent = hexCode;
+  showBoxColor(hexCode);
+}
+
+function showBoxColor(hexCode) {
+  board.style.backgroundColor = hexCode;
   generateRgb(hexCode);
 }
 
@@ -25,6 +35,10 @@ function generateRgb(hex) {
   r = parseInt(r, 16);
   g = parseInt(g, 16);
   b = parseInt(b, 16);
+  showRgb(r, g, b);
+}
+
+function showRgb(r, g, b) {
   rgbText.textContent = r + " , " + g + " , " + b;
   generateHsl(r, g, b);
 }
@@ -59,6 +73,12 @@ function generateHsl(r, g, b) {
   // multiply s and l by 100 to get the value in percent, rather than [0,1]
   s *= 100;
   l *= 100;
-  hslText.textContent = `hsl(${h}%,${s}%,${l}%)`;
   console.log("hsl(%f,%f%,%f%)", h, s, l); // just for testing
+  showHsl(h, s, l);
+}
+
+function showHsl(h, s, l) {
+  hslText.textContent = `hsl(${Math.floor(h)}%,${Math.floor(s)}%,${Math.floor(
+    l
+  )}%)`;
 }
